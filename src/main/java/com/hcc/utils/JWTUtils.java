@@ -37,7 +37,7 @@ public class JWTUtils {
 
     private Claims getAllClaimsFromToken(String token){
         return Jwts.parser()
-//                .setSigningKey(secret)
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -67,7 +67,7 @@ public class JWTUtils {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-//                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
