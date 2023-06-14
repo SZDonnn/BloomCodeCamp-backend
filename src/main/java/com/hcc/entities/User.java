@@ -18,23 +18,17 @@ public class User implements UserDetails {
     private String username;
     @Column(name = "password")
     private String password;
-    @Column(name = "authorities")
-    @OneToMany(targetEntity = Authority.class, mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Authority> authorities;
 
     public User() {
     }
 
-    public User(Long id, Date cohortStartDate, String username, String password, List<Authority> authorities) {
-        this.id = id;
+    public User(Date cohortStartDate, String username, String password, List<Authority> authorities) {
         this.cohortStartDate = cohortStartDate;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setCohortStartDate(Date cohortStartDate) {
@@ -62,6 +56,16 @@ public class User implements UserDetails {
     }
 
     @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -86,15 +90,5 @@ public class User implements UserDetails {
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(new Authority("role_student"));
         return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 }

@@ -18,17 +18,18 @@ public class Assignment {
     private String branch;
     @Column(name = "reviewVideoUrl")
     private String reviewVideoUrl;
-    @Column(name = "`user`")
+    @ManyToOne
+    @JoinColumn(name = "`user`")
     private User user;
-    @Column(name = "codeReviewer")
+    @ManyToOne
+    @JoinColumn(name = "codeReviewer")
     private User codeReviewer;
 
     public Assignment() {
     }
 
-    public Assignment(Long id, String status, Integer number, String githubUrl,
-                      String branch, String reviewVideoUrl, User user, User codeReviewer) {
-        this.id = id;
+    public Assignment(String status, Integer number, String githubUrl, String branch,
+                      String reviewVideoUrl, User user, User codeReviewer) {
         this.status = status;
         this.number = number;
         this.githubUrl = githubUrl;
@@ -38,5 +39,59 @@ public class Assignment {
         this.codeReviewer = codeReviewer;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public String getGithubUrl() {
+        return githubUrl;
+    }
+
+    public void setGithubUrl(String githubUrl) {
+        this.githubUrl = githubUrl;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public String getReviewVideoUrl() {
+        return reviewVideoUrl;
+    }
+
+    public void setReviewVideoUrl(String reviewVideoUrl) {
+        this.reviewVideoUrl = reviewVideoUrl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
+
+    public void setCodeReviewer(User codeReviewer) {
+        this.codeReviewer = codeReviewer;
+    }
 }
