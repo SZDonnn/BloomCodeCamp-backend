@@ -7,19 +7,19 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "`user`")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "cohortStartDate")
+    @Column(name = "cohort_start_date")
     private Date cohortStartDate;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Authority> authorities;
+    private List<Authority> authorities = new ArrayList<>();
 
     public User() {
     }
