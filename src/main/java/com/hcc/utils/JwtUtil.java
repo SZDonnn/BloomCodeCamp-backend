@@ -18,6 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil implements Serializable {
     public static final long JWT_TOKEN_VALIDITY = 5 * 24 * 60 * 60;
+
     @Value("${jwt.secret}")
     private String secret;
 
@@ -28,6 +29,7 @@ public class JwtUtil implements Serializable {
     public Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
+
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
@@ -54,6 +56,7 @@ public class JwtUtil implements Serializable {
     }
 
     private String doGenerateToken(String subject) {
+
         Claims claims = Jwts.claims().setSubject(subject);
         claims.put("scopes", Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
 

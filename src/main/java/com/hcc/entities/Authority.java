@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "authority")
+@Table(name = "authorities")
 public class Authority implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class Authority implements GrantedAuthority {
     @Column(name = "authority")
     private String authority;
     @ManyToOne
-    @JoinColumn(name = "`user`")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Authority() {

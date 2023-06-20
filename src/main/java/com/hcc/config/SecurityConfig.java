@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,19 +31,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         auth.userDetailsService(userDetailServiceImpl).passwordEncoder(customPasswordEncoder.getPasswordEncoder());
     }
-
     @Override
+
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().disable(); // do not dissable this lot here just for now!!
+        http.csrf().disable().cors().disable();
 
-        http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http = http.exceptionHandling().authenticationEntryPoint((request, response, exception) -> {
+        http.exceptionHandling().authenticationEntryPoint((request, response, exception) -> {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
-        }).and();
+        });
 
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests()
+//                // GET Requests
+//                .antMatchers(HttpMethod.GET, "/",
+//                            "/api/auth/login", "/api/auth/validate",
+//                            "/api/assignments", "/api/assignments/{id}")
+//                .permitAll()
+//                // POST Requests
+//                .antMatchers(HttpMethod.POST,
+//                "/api/assignments")
+//                .permitAll()
+//                // PUT Requests
+//                .antMatchers(HttpMethod.PUT,
+//                "/api/assignments/{id}")
+//                .permitAll()
+                .anyRequest().authenticated();
+
         http.addFilterBefore(jwtFilt, UsernamePasswordAuthenticationFilter.class);
     }
-
 }
