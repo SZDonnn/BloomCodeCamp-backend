@@ -25,10 +25,8 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepo;
-
     @Autowired
     private JwtUtil jwtUtil;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
