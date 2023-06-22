@@ -22,25 +22,30 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResponseEntity<String> login(@RequestBody AuthCredentialRequest request) {
-
         try {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // Retrieve the username and password from the request
             String username = request.getUsername();
-            String password = passwordEncoder.encode(request.getPassword());
-//            System.out.println("PASSWORD " + password);
+            String password = request.getPassword();
+
+            // Perform authentication
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            User user = (User) auth.getPrincipal();
 
-            // If authentication successful, generate JWT token
-            String token = jwtUtil.generateToken(user);
-//            System.out.println("TOKEN = " + token);
-            return ResponseEntity.ok().header("Authorization", "Bearer " + token).build();
+            // Set the authenticated user in the SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // Generate JWT token
+            String token = jwtUtil.generateToken((User) auth.getPrincipal());
+
+            // Return the token in the response headers
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + token)
+                    .build();
         } catch (AuthenticationException e) {
+            // Return 401 Unauthorized if authentication fails
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
