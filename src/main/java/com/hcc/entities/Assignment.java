@@ -20,14 +20,15 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @Column(name = "code_reviewer_id")
-    private Integer codeReviewer;
+    private User codeReviewer;
 
     public Assignment() {
     }
 
     public Assignment(String branch, String reviewVideoUrl, String githubUrl,
-                      Integer number, User user, Integer codeReviewer) {
+                      Integer number, User user, User codeReviewer) {
         this.branch = branch;
         this.reviewVideoUrl = reviewVideoUrl;
         this.githubUrl = githubUrl;
@@ -84,11 +85,11 @@ public class Assignment {
         this.user = user;
     }
 
-    public Integer getCodeReviewer() {
+    public User getCodeReviewer() {
         return codeReviewer;
     }
 
-    public void setCodeReviewer(Integer codeReviewer) {
+    public void setCodeReviewer(User codeReviewer) {
         this.codeReviewer = codeReviewer;
     }
 }

@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,8 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .exceptionHandling()
+                .authenticationEntryPoint((request, response, exception) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage() + " with request content "+ request.toString());
+                })
+                .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/validate").permitAll()
+                .antMatchers("/api/auth/login", "/api/auth/validate", "/api/auth/logout").permitAll()
                 .antMatchers("/api/assignments", "/api/assignments/{id}").authenticated()
                 .anyRequest().authenticated();
 

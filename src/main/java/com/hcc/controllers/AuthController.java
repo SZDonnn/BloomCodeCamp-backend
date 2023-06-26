@@ -11,12 +11,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Autowired
+    private HttpServletRequest request;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -28,6 +31,7 @@ public class AuthController {
             // Retrieve the username and password from the request
             String username = request.getUsername();
             String password = request.getPassword();
+
 
             // Perform authentication
             Authentication auth = authenticationManager.authenticate(
@@ -42,12 +46,21 @@ public class AuthController {
 
             // Return the token in the response headers
             return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + token)
-                    .build();
+                    .header("Authorization", token)
+                    .body(token);
         } catch (AuthenticationException e) {
             // Return 401 Unauthorized if authentication fails
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<?> logout() {
+        // Invalidate the current session
+        request.getSession().invalidate();
+
+        // Return a successful response
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("validate")
