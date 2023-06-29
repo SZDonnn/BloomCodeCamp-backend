@@ -2,6 +2,7 @@ package com.hcc.controllers;
 
 import com.hcc.dtos.AuthCredentialRequest;
 import com.hcc.entities.User;
+import com.hcc.repositories.UserRepository;
 import com.hcc.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
     @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -66,6 +70,22 @@ public class AuthController {
     @GetMapping("validate")
     public ResponseEntity<?> validate(@RequestBody AuthCredentialRequest request) {
         return ResponseEntity.ok().body("validate");
+    }
+
+    @GetMapping("userinfo")
+    public ResponseEntity<?> userInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        User user = userRepository.findByUsername(authenticatedUser.getUsername()).orElse(null);
+
+        if (user != null) {
+            // Return the user information in the response
+            return ResponseEntity.ok(user);
+        } else {
+            // User not found in the database
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
