@@ -1,10 +1,12 @@
 package com.hcc.controllers;
 
 import com.hcc.dtos.AuthCredentialRequest;
+import com.hcc.dtos.AuthCredentialResponse;
 import com.hcc.entities.User;
 import com.hcc.repositories.UserRepository;
 import com.hcc.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,13 +31,13 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody AuthCredentialRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthCredentialRequest request) {
         try {
             // Retrieve the username and password from the request
             String username = request.getUsername();
             String password = request.getPassword();
-
 
             // Perform authentication
             Authentication auth = authenticationManager.authenticate(
@@ -46,12 +48,26 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             // Generate JWT token
-            String token = jwtUtil.generateToken((User) auth.getPrincipal());
+            User authenticatedUser = (User) auth.getPrincipal();
+            String token = jwtUtil.generateToken(authenticatedUser);
 
-            // Return the token in the response headers
-            return ResponseEntity.ok()
-                    .header("Authorization", token)
-                    .body(token);
+            // Print the authority in the console
+            System.out.println(token);
+            authenticatedUser.getAuthorities().forEach(authority ->
+                    System.out.println("User authority: " + authority.getAuthority()));
+
+            // Create the response DTO with token, username, and role
+            AuthCredentialResponse response = new AuthCredentialResponse(
+                    token, authenticatedUser.getUsername(),
+                    authenticatedUser.getAuthorities().iterator().next().getAuthority()
+            );
+
+            // Set the token as a response header
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + token);
+
+            // Return the response DTO with the token in the response header
+            return ResponseEntity.ok().headers(headers).body(response);
         } catch (AuthenticationException e) {
             // Return 401 Unauthorized if authentication fails
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

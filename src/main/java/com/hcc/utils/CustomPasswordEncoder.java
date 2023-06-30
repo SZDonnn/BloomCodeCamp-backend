@@ -7,14 +7,20 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class CustomPasswordEncoder {
+public class CustomPasswordEncoder implements PasswordEncoder {
     private PasswordEncoder passwordEncoder;
 
-    public CustomPasswordEncoder(){
+    public CustomPasswordEncoder() {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public PasswordEncoder getPasswordEncoder(){
-        return passwordEncoder;
+    @Override
+    public String encode(CharSequence rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
