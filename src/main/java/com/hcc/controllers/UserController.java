@@ -35,7 +35,7 @@ public class UserController {
 
         // Check if the currently logged-in user has the "ROLE_REVIEWER" authority
         if (authentication != null && authentication.isAuthenticated()) {
-            System.out.println(authentication.getAuthorities());
+            System.out.println("Username: " + request.getUsername());
             // Perform user registration logic
             // Create a new User entity based on the registration request data
             User user = new User();
