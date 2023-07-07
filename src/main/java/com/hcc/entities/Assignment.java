@@ -21,7 +21,8 @@ public class Assignment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "code_reviewer_id")
+    @OneToOne
+    @JoinColumn(name = "code_reviewer_id")
     private User codeReviewer;
 
     public Assignment() {
@@ -77,11 +78,11 @@ public class Assignment {
         this.number = number;
     }
 
-    public User getUserId() {
+    public User getUser() {
         return user;
     }
 
-    public void setUserId(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

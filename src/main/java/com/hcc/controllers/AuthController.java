@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,10 +57,15 @@ public class AuthController {
             authenticatedUser.getAuthorities().forEach(authority ->
                     System.out.println("User authority: " + authority.getAuthority()));
 
-            // Create the response DTO with token, username, and role
+            // Create the response DTO with token, username, and authority
             AuthCredentialResponse response = new AuthCredentialResponse(
-                    token, authenticatedUser.getUsername(),
-                    authenticatedUser.getAuthorities().iterator().next().getAuthority()
+                    token,
+                    authenticatedUser.getUsername(),
+                    authenticatedUser.getAuthorities()
+                            .stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .findFirst()
+                            .orElse(null)
             );
 
             // Set the token as a response header
@@ -103,5 +109,4 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

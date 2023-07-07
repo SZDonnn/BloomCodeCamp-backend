@@ -6,6 +6,5 @@ import lombok.Data;
 public class AuthCredentialResponse {
     private final String token;
     private final String username;
-    private final String role;
-
+    private final String authority;
 }
