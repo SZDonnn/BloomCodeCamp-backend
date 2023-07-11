@@ -53,11 +53,6 @@ public class AuthController {
             User authenticatedUser = (User) auth.getPrincipal();
             String token = jwtUtil.generateToken(authenticatedUser);
 
-            // Print the authority in the console
-            System.out.println(token);
-            authenticatedUser.getAuthorities().forEach(authority ->
-                    System.out.println("User authority: " + authority.getAuthority()));
-
             // Create the response DTO with token, username, and authority
             AuthCredentialResponse response = new AuthCredentialResponse(
                     token,
