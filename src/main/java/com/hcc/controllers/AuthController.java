@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,9 +90,24 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("validate")
-    public ResponseEntity<?> validate(@RequestBody AuthCredentialRequest request) {
-        return ResponseEntity.ok().body("validate");
+    @PostMapping("validate")
+    public ResponseEntity<?> validate(HttpServletRequest request, @AuthenticationPrincipal User user) {
+        // Get the token from the Authorization header
+        String token = request.getHeader("Authorization");
+
+        // Remove the "Bearer " prefix from the token
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        // Validate the token
+        if (jwtUtil.validateToken(token, user)) {
+            // Token is valid
+            return ResponseEntity.ok().body("Token is valid");
+        } else {
+            // Token is invalid or expired
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid or expired");
+        }
     }
 
     @GetMapping("userinfo")
