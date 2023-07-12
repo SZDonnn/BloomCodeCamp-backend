@@ -6,14 +6,14 @@ import com.hcc.entities.User;
 import com.hcc.repositories.AssignmentRepository;
 import com.hcc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.Assign;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public class AssignmentController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> createAssignment(@RequestBody AssignmentRequest request,
                                               @AuthenticationPrincipal User user) {
         try {
@@ -37,8 +37,6 @@ public class AssignmentController {
             assignment.setGithubUrl(request.getGithubUrl());
             assignment.setNumber(request.getNumber());
             assignment.setUser(user);
-
-            // Set additional properties if needed (e.g., codeReviewer)
 
             // Save the assignment to the database
             assignmentRepository.save(assignment);
@@ -89,7 +87,7 @@ public class AssignmentController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<?> getAllAssignments(@AuthenticationPrincipal User user) {
         // Fetch all assignments from the database
         List<Assignment> assignments = assignmentRepository.findAll();
@@ -97,4 +95,5 @@ public class AssignmentController {
         // Return the assignments in the response
         return ResponseEntity.ok(assignments);
     }
+
 }
